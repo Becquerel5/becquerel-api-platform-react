@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import ReactDOM from 'react-dom';
-import {HashRouter ,Switch, Route} from 'react-router-dom';
+import { HashRouter ,Switch, Route, withRouter, Redirect } from 'react-router-dom';
 
 /*
  * Welcome to your app's main JavaScript file!
@@ -18,27 +18,47 @@ import Navbar from './js/components/Navbar';
 import HomePage from './js/pages/HomePage';
 import CustomersPage from './js/pages/CustomersPage';
 import InvoicePage from './js/pages/InvoicesPage';
+import LoginPage from './js/pages/LoginPage';
+import AuthApi from './js/services/authApi';
+import AuthContext from './js/contexts/AuthContext'
+import PrivateRoute from './js/components/PrivateRoute';
 
 
 
-console.log("Hello DTFB");
+console.log("Hello from  Donfack.Becquerel Symfony-React CRM ");
+AuthApi.setup();
+
+
+
 
 const App = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(AuthApi.isAuthenticated());
+
+    const NavbarWithRouter = withRouter(Navbar);
+
+  
+
     return (
-    <HashRouter>
-       <Navbar/>
-       
+    <AuthContext.Provider value={{
+        isAuthenticated,
+        setIsAuthenticated
+    }}>
+        <HashRouter>
+            <NavbarWithRouter/> 
+            
+                <main className='container pt-5'>
+                    
+                        <Switch>
+                            <Route path="/login" component={LoginPage} />
+                            <PrivateRoute path="/customers" component={CustomersPage}/>
+                            <PrivateRoute path="/invoices" component={InvoicePage}/>
+                            <Route path="/" component={HomePage}/>
 
-       <main className='container pt-5'>
-        
-            <Switch>
-                <Route path="/customers" component={CustomersPage}></Route>
-                <Route path="/invoices" component={InvoicePage}></Route>
-                <Route path="/" component={HomePage}></Route>
-            </Switch>
-       </main>
+                        </Switch>
+                </main>
 
-    </HashRouter>
+            </HashRouter>
+    </AuthContext.Provider>
     );
 };
 
