@@ -17,11 +17,16 @@ import './bootstrap';
 import Navbar from './js/components/Navbar';
 import HomePage from './js/pages/HomePage';
 import CustomersPage from './js/pages/CustomersPage';
-import InvoicePage from './js/pages/InvoicesPage';
+import InvoicesPage from './js/pages/InvoicesPage';
 import LoginPage from './js/pages/LoginPage';
 import AuthApi from './js/services/authApi';
 import AuthContext from './js/contexts/AuthContext'
 import PrivateRoute from './js/components/PrivateRoute';
+import CustomerPage from './js/pages/CustomerPage';
+import InvoicePage from './js/pages/InvoicePage';
+import RegisterPage from './js/pages/RegisterPage';
+
+
 
 
 
@@ -50,8 +55,13 @@ const App = () => {
                     
                         <Switch>
                             <Route path="/login" component={LoginPage} />
+                            <Route path="/register" component={RegisterPage} />
+
+                            <PrivateRoute path="/invoices/:id" component={InvoicePage}/>
+                            <PrivateRoute path="/invoices" component={InvoicesPage}/>
+
+                            <PrivateRoute path="/customers/:id" component={CustomerPage}/>
                             <PrivateRoute path="/customers" component={CustomersPage}/>
-                            <PrivateRoute path="/invoices" component={InvoicePage}/>
                             <Route path="/" component={HomePage}/>
 
                         </Switch>

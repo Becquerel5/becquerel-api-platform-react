@@ -3,6 +3,7 @@ import Pagination from '../components/Pagination';
 import axios from 'axios';
 import moment from 'moment';
 import InvoicesApi from '../services/InvoicesApi';
+import { Link } from 'react-router-dom'
 
 const STATUS_CLASSES = {
     PAID: "primary",
@@ -88,7 +89,13 @@ const InvoicePage = props => {
 
     return ( 
         <>
+        <div className="d-flex justify-content-between align-items-center">
             <h1>Liste des Factures</h1> 
+           <Link className='btn btn-primary' to="invoices/new">Créer une facture</Link> 
+          
+ 
+        </div>
+        
             <div className='form-group'>
             <input type="text"  onChange={handleSearch} value={search} className='form-control' placeholder='Rechercher...'/>
             </div>
@@ -116,7 +123,7 @@ const InvoicePage = props => {
                             <span className={"btn btn-" +STATUS_CLASSES[invoice.status]}>{STATUS_LABEL[invoice.status]}</span>
                         </td>
                         <td>
-                            <button className='btn btn-sm btn-primary'>Modifier </button> &nbsp;  
+                            <Link to={"/invoices/" + invoice.id} className='btn btn-sm btn-primary'>Modifier </Link> &nbsp;  
                             <button
                                 onClick={()=> handleDelete(invoice.id)}
                                  className='btn btn-sm btn-danger'>Supprimer

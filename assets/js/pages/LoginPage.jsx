@@ -2,6 +2,8 @@ import React,{useContext, useState} from 'react';
 import axios from 'axios';
 import AuthApi from '../services/authApi';
 import AuthContext from '../contexts/AuthContext';
+import Field from '../components/forms/Field';
+import { Link } from 'react-router-dom/cjs/react-router-dom';
 
  const LoginPage = ({ history }) => {
 
@@ -58,27 +60,27 @@ import AuthContext from '../contexts/AuthContext';
          <h1>Connexion a l'appliation</h1>
 
          <form onSubmit={handleSubmit}>
-             <div className='form-group'> 
-                <label htmlFor='username'>Email Addresse</label>
-                <input 
-                type="email" 
-                onChange={handleChange} 
-                value={credentials.username} 
-                placeholder='email addresse' 
-                name='username' 
-                id='username' 
-                className={'form-control' +(error && " is-invalid")}
-
-                /> 
-               { error && <p className='invalid-feedback'>{error}</p>  }
-            </div>
-             <div className='form-group'> 
-                <label htmlFor=''></label>
-                <input type="password" onChange={handleChange} value={credentials.password} placeholder='password' name='password'id='password' className='form-control'/> 
-            </div>
+            <Field 
+            label="Adresse email" 
+            name="username" 
+            value={credentials.username} 
+            onChange={handleChange} 
+            placeholder="Adresse email de connexion" 
+            error={error}/>
+            
+            <Field
+                name="password"
+                label="Mot de passe"
+                value={credentials.password}
+                onChange={handleChange}
+                type="password"
+                error=''
+            />
+             
             <br/>
             <div>
                 <button type='submit' className='btn btn-success'>Connexion</button>
+                <Link to="/register" className='btn btn-link'>créé un compte</Link>
             </div>
          </form>
 
