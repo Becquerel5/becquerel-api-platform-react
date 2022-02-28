@@ -32,6 +32,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 
+
+
 console.log("Hello from  Donfack.Becquerel Symfony-React CRM ");
 AuthApi.setup();
 

@@ -1,5 +1,6 @@
 import axios from "axios";
 import jwtDecode from "jwt-decode";
+import { LOGIN_API } from "../config";
 
 
 function logout() {
@@ -11,7 +12,7 @@ function logout() {
 
 function authenticate(credentials){
  return axios
-    .post('https://localhost:8000/api/login_check', credentials)
+    .post(LOGIN_API, credentials)
     .then(response => response.data.token)
     .then(token => {
 
