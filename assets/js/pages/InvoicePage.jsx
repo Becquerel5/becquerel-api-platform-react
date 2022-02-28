@@ -5,6 +5,8 @@ import Select from '../components/forms/Select';
 import { Link } from 'react-router-dom';
 import CustomersApi from '../services/CustomersApi';
 import InvoicesApi from '../services/InvoicesApi';
+import { toast } from 'react-toastify';
+import FormContentLoader from '../components/loaders/FormContentLoader';
 
 
 
@@ -27,6 +29,7 @@ const InvoicePage = ({history,match}) => {
         customer: "",
         status: ""
     });
+    const[loading, setLoading] =useState(true);
 
 
 
@@ -34,12 +37,14 @@ const InvoicePage = ({history,match}) => {
         try {
             const data = await CustomersApi.findAll(); 
             setCustomers(data);
+            setLoading(false);
 
             if(!invoice.customer) setInvoice({...invoice,customer:data[0].id});
 
         } catch (error) {
             history.replace('/invoices');
             //notif error
+            toast.error("impossible de charger les clients");
             console.log(error.response)
         }
     };
@@ -48,10 +53,12 @@ const InvoicePage = ({history,match}) => {
         try {
           const {amount,status,customer} = await InvoicesApi.find(id);   
           setInvoice({amount,status,customer:customer.id});
+          setLoading(false);
         } catch (error) {
         console.log(error.response);  
         history.replace('/invoices');
         //notifi   error
+        toast.error("impossible de charger la factures demander");
         }
     };
    
@@ -81,11 +88,13 @@ const InvoicePage = ({history,match}) => {
         if (editing) {
             await InvoicesApi.update(id,invoice);
             //flash noti
+            toast.success("la facture a bien été modifier");
             
         } else {
             
             await InvoicesApi.create(invoice);
             //TODO flash noti
+            toast.success("la facture a bien été enregistrer");
             history.replace("/invoices");
            
         }
@@ -100,6 +109,7 @@ const InvoicePage = ({history,match}) => {
             setErrors(apiErrors);
 
             //TODO : FLash succes notification
+           toast.error("Des erreus dans votre formulaire");
        }
     }
 
@@ -107,8 +117,10 @@ const InvoicePage = ({history,match}) => {
 
     return ( 
         <>
+            
             {editing && <h1>Modifier d'une facture </h1> || <h1>Création d'une facture  </h1>}
-            <form onSubmit={handleSubmit}>
+            {loading && <FormContentLoader/>}
+            {!loading && <form onSubmit={handleSubmit}>
                 <Field 
                     name="amount"
                     type='number'
@@ -157,7 +169,8 @@ const InvoicePage = ({history,match}) => {
                 </Link>
                 </div>
                
-            </form>
+            </form>}
+            
         </>
      );
 };

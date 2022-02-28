@@ -1,7 +1,9 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Field from '../components/forms/Field';
+import FormContentLoader from '../components/loaders/FormContentLoader';
 import CustomersApi from '../services/CustomersApi';
 
 
@@ -24,6 +26,7 @@ const CustomerPage = ({match,history}) => {
     });
     
     const[editing, setEditing] = useState(false);
+    const[loading, setLoading] =useState(false);
 
 
 
@@ -32,9 +35,10 @@ const CustomerPage = ({match,history}) => {
             const {firstname, lastname, email, company } = await CustomersApi.find(id);
             
             setCustomer({firstname,lastname,email,company});
+            setLoading(false);
         
         } catch (error) {
-            console.log(error.response);
+           toast.error("le client n'as pas put etre charger");
             history.replace('/customers');
         }
     };
@@ -43,6 +47,7 @@ const CustomerPage = ({match,history}) => {
 //charagement du customer ci besoin charger les identifiants
     useEffect( ()=>{
         if (id !== "new") {
+            setLoading(true);
             setEditing(true);
             fetchCustomer(id)
         } 
@@ -56,18 +61,18 @@ const CustomerPage = ({match,history}) => {
     const handleSubmit = async event =>{
         event.preventDefault();
         try {
+            setErrors({});
             if (editing) {
                  await CustomersApi.update(id,customer);
                     //console.log(response.data);
-                //TODO : FLash succes notification
+                toast.success("le client a bien  été modifier");
 
             }else{
                  await CustomersApi.create(customer);
 
-                //TODO : FLash succes notification
+                toast.success("le client a bien été crée");
                 history.replace('/customers');
             }
-            setErrors({});
         } catch ({response}) {
             const { violations }= response.data; 
            if(violations){
@@ -77,7 +82,7 @@ const CustomerPage = ({match,history}) => {
                 });
                 setErrors(apiErrors);
 
-                //TODO : FLash succes notification
+                toast.error("Des erreurs dans le formulaires");
            }
         }
     };
@@ -85,7 +90,8 @@ const CustomerPage = ({match,history}) => {
     return ( 
         <>
             {!editing && <h1>Creation d'un clients</h1> || <h1>Modification du client  </h1> }
-            <form onSubmit={handleSubmit}>
+            {loading && <FormContentLoader/>}
+            {!loading && <form onSubmit={handleSubmit}>
                <Field
                 name='lastname' 
                 label="Nom de famille" 
@@ -102,7 +108,7 @@ const CustomerPage = ({match,history}) => {
                    <button type="submit" className="btn btn-success">Enregistrer</button> 
                    <Link to="/customers" className='btn btn-link'>Retour a la liste</Link>
                </div>
-            </form>
+            </form>}
         </>
      );
 }

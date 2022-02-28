@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import AuthApi from '../services/authApi';
 import { NavLink } from 'react-router-dom';
 import AuthContext from '../contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 const Navbar = ({ history }) => {
 
@@ -9,6 +10,17 @@ const Navbar = ({ history }) => {
     const handleLogout = () => {
         AuthApi.logout();
         setIsAuthenticated(false);
+        toast.info("Vous etes desormais deconnecter 🦄 ");
+        //toast.info("Vous etes desormais deconnecter 🦄 ",{
+           // position: "top-left",
+           // autoClose: 5000,
+           // hideProgressBar: false,
+           // closeOnClick: true,
+           // pauseOnHover: true,
+           // draggable: true,
+           /// progress: undefined,
+       // }
+      //  );
         history.push("/login");
     };
 

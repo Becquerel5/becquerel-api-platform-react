@@ -4,6 +4,7 @@ import AuthApi from '../services/authApi';
 import AuthContext from '../contexts/AuthContext';
 import Field from '../components/forms/Field';
 import { Link } from 'react-router-dom/cjs/react-router-dom';
+import { toast } from 'react-toastify';
 
  const LoginPage = ({ history }) => {
 
@@ -32,6 +33,7 @@ import { Link } from 'react-router-dom/cjs/react-router-dom';
             await AuthApi.authenticate(credentials);
             setError("");
             setIsAuthenticated(true);
+            toast.success("Vous etes desormais connecter");
             history.replace("/customers");
             /*  const token = await axios
              .post('https://localhost:8000/api/login_check', credentials)
@@ -49,7 +51,8 @@ import { Link } from 'react-router-dom/cjs/react-router-dom';
          } catch (error) {
             // console.log(error.response);
              setError("Aucun compte avec cette addresse ou mauvais mot de passe");
-         }
+            toast.error("une erreur est survenue");
+            }
 
         // console.log(credentials);
 

@@ -4,6 +4,8 @@ import axios from 'axios';
 import moment from 'moment';
 import InvoicesApi from '../services/InvoicesApi';
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify';
+import TableLoader from '../components/loaders/TableLoader';
 
 const STATUS_CLASSES = {
     PAID: "primary",
@@ -23,6 +25,7 @@ const InvoicePage = props => {
     const [invoices, setInvoices] = useState([]);
     const[currentPage, setCurrentPage]=useState(1);
     const[search, setSearch] = useState("");
+    const[loading, setLoading] =useState(true);
 
 
     
@@ -31,10 +34,10 @@ const InvoicePage = props => {
            // const data = await axios
             const data = await InvoicesApi.findAll()
             setInvoices(data);
-            setInvoices(data);
+            setLoading(false);
             
         } catch (error) {
-            console.error(error.response);
+            toast.error("Erreurs Lor du chargement des Factures!");
             //.then(data => setInvoices(data))
             //.catch(error => console.error(error.response));
         }
@@ -57,9 +60,9 @@ const InvoicePage = props => {
          //2 pesimistic
          try {
             await InvoicesApi.delete(id)
-                      
+            toast.success("la facture a bien été supprimer");
          } catch (error) {
-             console.log(error.response);
+            toast.error("une erreur est survenue");
              setInvoices(originalInvoices);
          }
         
@@ -111,7 +114,7 @@ const InvoicePage = props => {
                     <th/>
                 </tr>
             </thead>
-            <tbody>
+            {!loading && <tbody>
               {paginatedInvoices.map(invoice => 
                 <tr key={invoice.id}>
                         <td>{invoice.id}</td>
@@ -134,8 +137,10 @@ const InvoicePage = props => {
                )}
                     
                 
-            </tbody>
+            </tbody>}
         </table>
+        {loading && <TableLoader/>}
+
         <Pagination 
         currentPage={currentPage}
         itemsPerPage={itemsPerPage}
